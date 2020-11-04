@@ -1,2 +1,2 @@
-exports.pluginName = 'webpack-auto-i18n';
-exports.webpackPluginName = 'webpack-auto-i18n';
+exports.pluginName = 'i18n-transform';
+exports.webpackPluginName = 'webpack-i18n-transform';

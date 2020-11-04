@@ -27,7 +27,7 @@ module.exports = (api) => {
   });
 
   api.exitLog(`
-    \n more config: https://github.com/xiangmaoshuo/webpack-auto-plugin`,
+    \n more config: https://github.com/xiangmaoshuo/webpack-i18n-transform`,
     'done'
   );
 }

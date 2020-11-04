@@ -3,7 +3,7 @@ const fs = require('fs');
 const selfName = JSON.parse(fs.readFileSync(path.resolve(__dirname, './package.json'))).name;
 
 const { pluginName, webpackPluginName } = require('./constant');
-const AutoI18nWebpackPlugin = require(webpackPluginName);
+const TransformI18nWebpackPlugin = require(webpackPluginName);
 
 module.exports = (api, { pluginOptions = {} }) => {
   const options = pluginOptions[pluginName] || { i18nPath: 'src/i18n/index.js', generateZhPath: false };
@@ -45,7 +45,7 @@ module.exports = (api, { pluginOptions = {} }) => {
   api.configureWebpack(() => {
     return {
       plugins: [
-        new AutoI18nWebpackPlugin(options),
+        new TransformI18nWebpackPlugin(options),
       ],
     };
   });
