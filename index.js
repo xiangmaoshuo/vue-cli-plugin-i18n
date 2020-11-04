@@ -1,6 +1,4 @@
 const path = require('path');
-const fs = require('fs');
-const selfName = JSON.parse(fs.readFileSync(path.resolve(__dirname, './package.json'))).name;
 
 const { pluginName, webpackPluginName } = require('./constant');
 const TransformI18nWebpackPlugin = require(webpackPluginName);
@@ -9,31 +7,22 @@ module.exports = (api, { pluginOptions = {} }) => {
   const options = pluginOptions[pluginName] || { i18nPath: 'src/i18n/index.js', generateZhPath: false };
   api.chainWebpack(config => {
     const resolve = (dir) => path.join(api.service.context, dir);
-    const pluginNodeModules = resolve(`./node_modules/${selfName}/node_modules`);
+    const pluginNodeModules = resolve(`./node_modules/${api.id}/node_modules`);
     config.resolveLoader.modules.add(pluginNodeModules);
 
     // js
-    const jsRule = config.module.rule('js');
-
-    const jsUses = jsRule.uses;
-    const babelLoader = jsUses.get('babel-loader');
-    jsUses.delete('babel-loader');
-
-    jsRule.use('i18n-js-loader').loader(`${webpackPluginName}/loader/for-js.js`);
-
-    jsUses.set('babel-loader', babelLoader);
+    insertLoader({
+      rule: config.module.rule('js'),
+      loaderName: 'i18n-js-loader',
+      loaderPath: `${webpackPluginName}/loader/for-js.js`,
+    });
 
     // vue
-    const vueRule = config.module.rule('vue');
-
-    const vueUses = vueRule.uses;
-    const vueLoader = vueUses.get('vue-loader');
-    vueUses.delete('vue-loader');
-
-    vueRule.use('i18n-vue-loader')
-      .loader(`${webpackPluginName}/loader/for-vue.js`);
-
-    vueUses.set('vue-loader', vueLoader);
+    insertLoader({
+      rule: config.module.rule('vue'),
+      loaderName: 'i18n-vue-loader',
+      loaderPath: `${webpackPluginName}/loader/for-vue.js`,
+    });
 
     // excel
     config.module
@@ -49,4 +38,22 @@ module.exports = (api, { pluginOptions = {} }) => {
       ],
     };
   });
+}
+
+// 插入loader，放在cache-loader后面
+function insertLoader({ rule, loaderName, loaderPath }) {
+  const uses = rule.uses;
+  const loaders = [...uses.store];
+
+  uses.clear();
+  
+  const cacheLoaderIndex = loaders.findIndex(([a]) => a === 'cache-loader');
+  if (cacheLoaderIndex > -1) {
+    const [k, v] = loaders.splice(cacheLoaderIndex, 1)[0];
+    uses.set(k, v);
+  }
+
+  rule.use(loaderName).loader(loaderPath);
+
+  loaders.forEach(([a, b]) => uses.set(a, b));
 }

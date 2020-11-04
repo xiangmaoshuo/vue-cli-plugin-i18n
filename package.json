@@ -1,12 +1,16 @@
 {
   "name": "@xtg/vue-cli-plugin-i18n",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a vue-cli3 plugin, which can convert chinese to i18n, is based on webpack-i18n-transform",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["i18n", "vue-i18n", "vue-cli-plugin"],
+  "keywords": [
+    "i18n",
+    "vue-i18n",
+    "vue-cli-plugin"
+  ],
   "author": "xms",
   "license": "ISC",
   "dependencies": {
