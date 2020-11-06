@@ -4,22 +4,24 @@ const { pluginName, webpackPluginName } = require('./constant');
 const TransformI18nWebpackPlugin = require(webpackPluginName);
 
 module.exports = (api, { pluginOptions = {} }) => {
-  const options = pluginOptions[pluginName] || { i18nPath: 'src/i18n/index.js', generateZhPath: false };
+  const options = pluginOptions[pluginName] || { i18nPath: 'src/i18n/index.js' };
   api.chainWebpack(config => {
     const resolve = (dir) => path.join(api.service.context, dir);
     const pluginNodeModules = resolve(`./node_modules/${api.id}/node_modules`);
     config.resolveLoader.modules.add(pluginNodeModules);
 
     // js
-    insertLoader({
+    insertBefore({
       rule: config.module.rule('js'),
+      beforeLoaderName: 'babel-loader',
       loaderName: 'i18n-js-loader',
       loaderPath: `${webpackPluginName}/loader/for-js.js`,
     });
 
     // vue
-    insertLoader({
+    insertBefore({
       rule: config.module.rule('vue'),
+      beforeLoaderName: 'vue-loader',
       loaderName: 'i18n-vue-loader',
       loaderPath: `${webpackPluginName}/loader/for-vue.js`,
     });
@@ -41,19 +43,20 @@ module.exports = (api, { pluginOptions = {} }) => {
 }
 
 // 插入loader，放在cache-loader后面
-function insertLoader({ rule, loaderName, loaderPath }) {
+function insertBefore({ rule, loaderName, loaderPath, beforeLoaderName }) {
   const uses = rule.uses;
   const loaders = [...uses.store];
 
   uses.clear();
   
-  const cacheLoaderIndex = loaders.findIndex(([a]) => a === 'cache-loader');
-  if (cacheLoaderIndex > -1) {
-    const [k, v] = loaders.splice(cacheLoaderIndex, 1)[0];
-    uses.set(k, v);
+  const beforeLoaderIndex = loaders.findIndex(([a]) => a === beforeLoaderName);
+  if (beforeLoaderIndex > -1) {
+    setLoaders(uses, loaders.slice(0, beforeLoaderIndex));
+    rule.use(loaderName).loader(loaderPath);
+    setLoaders(uses, loaders.slice(beforeLoaderIndex));
   }
-
-  rule.use(loaderName).loader(loaderPath);
-
-  loaders.forEach(([a, b]) => uses.set(a, b));
 }
+
+function setLoaders(uses, loaders) {
+  loaders.forEach(([a, b]) => uses.set(a, b));
+};

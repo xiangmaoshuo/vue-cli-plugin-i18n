@@ -16,7 +16,6 @@ module.exports = (api) => {
       pluginOptions: {
         [pluginName]: {
           i18nPath: 'src/i18n/index.js',
-          generateZhPath: false
         },
       },
     },
