@@ -16,6 +16,7 @@ module.exports = (api, { pluginOptions = {} }) => {
       beforeLoaderName: 'babel-loader',
       loaderName: 'i18n-js-loader',
       loaderPath: `${webpackPluginName}/loader/for-js.js`,
+      testRegExp: /\.m?jsx?$/
     });
 
     // vue
@@ -24,6 +25,7 @@ module.exports = (api, { pluginOptions = {} }) => {
       beforeLoaderName: 'vue-loader',
       loaderName: 'i18n-vue-loader',
       loaderPath: `${webpackPluginName}/loader/for-vue.js`,
+      testRegExp: /\.vue$/
     });
 
     // excel
@@ -43,18 +45,31 @@ module.exports = (api, { pluginOptions = {} }) => {
 }
 
 // 插入loader，放在cache-loader后面
-function insertBefore({ rule, loaderName, loaderPath, beforeLoaderName }) {
+function insertBefore({ rule, loaderName, loaderPath, beforeLoaderName, testRegExp }) {
   const uses = rule.uses;
   const loaders = [...uses.store];
+  
+  // 表示对应的规则不存在
+  if (loaders.length) {
+    rule.test(testRegExp)
+    .use(loaderName)
+    .loader(loaderPath);
+    return;
+  }
 
   uses.clear();
-  
   const beforeLoaderIndex = loaders.findIndex(([a]) => a === beforeLoaderName);
+  // 插入
   if (beforeLoaderIndex > -1) {
     setLoaders(uses, loaders.slice(0, beforeLoaderIndex));
     rule.use(loaderName).loader(loaderPath);
     setLoaders(uses, loaders.slice(beforeLoaderIndex));
+    return;
   }
+
+  // 没有要插入的loader，则插入到最后
+  setLoaders(uses, loaders);
+  rule.use(loaderName).loader(loaderPath);
 }
 
 function setLoaders(uses, loaders) {
