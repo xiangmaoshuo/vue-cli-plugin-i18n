@@ -16,6 +16,15 @@
   "dependencies": {
     "webpack-i18n-transform": "^0.0.7"
   },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/generator": "^7.12.1",
+    "@babel/parser": "^7.12.3",
+    "@babel/traverse": "^7.12.1",
+    "@babel/types": "^7.12.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.21.0"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

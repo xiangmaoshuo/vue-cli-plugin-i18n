@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs');
 
 const dftIgnoreText = `
 .DS_Store
@@ -25,9 +25,9 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-`
+`;
 
-module.exports.updateGitIgnore = function(api) {
+module.exports.updateGitIgnore = function updateGitIgnore(api) {
   const ignorePath = api.resolve('./.gitignore');
   if (fs.existsSync(ignorePath)) {
     const ignoreText = fs.readFileSync(ignorePath, { encoding: 'utf8' });
@@ -36,14 +36,14 @@ module.exports.updateGitIgnore = function(api) {
         ignorePath,
         `${ignoreText}\n~*.xlsx`,
         { encoding: 'utf8' }
-      )
+      );
     }
   } else {
     fs.writeFileSync(
       ignorePath,
       dftIgnoreText,
       { encoding: 'utf8' }
-    )
+    );
   }
-}
+};
 

@@ -6,7 +6,7 @@ const TransformI18nWebpackPlugin = require(webpackPluginName);
 module.exports = (api, { pluginOptions = {} }) => {
   const options = pluginOptions[pluginName] || { i18nPath: 'src/i18n/index.js' };
   api.chainWebpack(config => {
-    const resolve = (dir) => path.join(api.service.context, dir);
+    const resolve = dir => path.join(api.service.context, dir);
     const pluginNodeModules = resolve(`./node_modules/${api.id}/node_modules`);
     config.resolveLoader.modules.add(pluginNodeModules);
 
@@ -38,17 +38,17 @@ module.exports = (api, { pluginOptions = {} }) => {
   api.configureWebpack(() => {
     return {
       plugins: [
-        new TransformI18nWebpackPlugin(options),
-      ],
+        new TransformI18nWebpackPlugin(options)
+      ]
     };
   });
-}
+};
 
 // 插入loader，放在cache-loader后面
 function insertBefore({ rule, loaderName, loaderPath, beforeLoaderName, testRegExp }) {
   const uses = rule.uses;
   const loaders = [...uses.store];
-  
+
   // 表示对应的规则不存在
   if (loaders.length) {
     rule.test(testRegExp)
@@ -74,4 +74,4 @@ function insertBefore({ rule, loaderName, loaderPath, beforeLoaderName, testRegE
 
 function setLoaders(uses, loaders) {
   loaders.forEach(([a, b]) => uses.set(a, b));
-};
+}

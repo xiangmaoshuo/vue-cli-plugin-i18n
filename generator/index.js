@@ -1,12 +1,12 @@
 const { pluginName } = require('../constant');
 const { updateGitIgnore } = require('./util');
 
-module.exports = (api) => {
+module.exports = api => {
   api.extendPackage({
     dependencies: {
       'vue-i18n': '^8.22.1',
-      'xlsx': '^0.16.8',
-    },
+      'xlsx': '^0.16.8'
+    }
   });
 
   api.render('./template');
@@ -15,10 +15,10 @@ module.exports = (api) => {
     vue: {
       pluginOptions: {
         [pluginName]: {
-          i18nPath: 'src/i18n/index.js',
-        },
-      },
-    },
+          i18nPath: 'src/i18n/index.js'
+        }
+      }
+    }
   });
 
   api.onCreateComplete(() => {
@@ -29,4 +29,4 @@ module.exports = (api) => {
     \n more config: https://github.com/xiangmaoshuo/webpack-i18n-transform`,
     'done'
   );
-}
+};

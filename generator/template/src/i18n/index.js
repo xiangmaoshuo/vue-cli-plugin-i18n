@@ -13,8 +13,8 @@ const i18n = new VueI18n({
   locale,
   fallbackLocale: locale,
   messages: {
-    [locale]: { ...messages[locale], ...zh },
-  },
+    [locale]: { ...messages[locale], ...zh }
+  }
 });
 
 const loadedLanguages = [locale];
@@ -49,11 +49,11 @@ export function loadLanguageAsync(lang) {
   }
   return Promise.all([
     asyncLangs[lang](),
-    loadUiLang(lang),
+    loadUiLang(lang)
   ]).then(([a, b]) => {
     i18n.setLocaleMessage(lang, {
       ...b,
-      ...a.default,
+      ...a.default
     });
     loadedLanguages.push(lang);
     return setI18nLanguage(lang);
